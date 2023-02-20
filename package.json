@@ -1,0 +1,78 @@
+{
+  "name": "taskmanager",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome": "^1.1.8",
+    "@fortawesome/fontawesome-free": "^6.3.0",
+    "@fortawesome/fontawesome-free-solid": "5.0.13",
+    "@fortawesome/vue-fontawesome": "0.1.2",
+    "@vue/composition-api": "^1.7.1",
+    "axios": "^1.2.2",
+    "bootstrap": "^5.3.0-alpha1",
+    "bootstrap-vue": "^2.0.0-rc.11",
+    "buefy": "^0.9.22",
+    "console": "^0.7.2",
+    "core-js": "^3.6.5",
+    "cors": "^2.8.5",
+    "moment": "^2.22.2",
+    "raphael": "^2.2.7",
+    "ti-icons": "^0.1.2",
+    "toastr": "^2.1.4",
+    "v-calendar": "^0.9.7",
+    "vee-validate": "^2.1.1",
+    "vue": "^2.6.11",
+    "vue-bootstrap-datetimepicker": "^5.0.1",
+    "vue-google-oauth2": "^1.5.8",
+    "vue-router": "^3.2.0",
+    "vue-simple-spinner": "1.2.8",
+    "vue-sweetalert2": "1.5.6",
+    "vuex": "3.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.4",
+    "@vue/cli-plugin-eslint": "~4.5.4",
+    "@vue/cli-plugin-router": "^4.5.19",
+    "@vue/cli-service": "~4.5.4",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "vue-template-compiler": "^2.6.11",
+    "jquery": "^3.3.1",
+    "less": "^3.8.1",
+    "less-loader": "4.1.0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {
+      "no-unused-vars": [
+        "warn",
+        {
+          "argsIgnorePattern": "^_",
+          "varsIgnorePattern": "^_"
+        }
+      ],
+      "@typescript-eslint/no-unused-vars": "off"
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
