@@ -1,6 +1,6 @@
 <template>
 <div>
-    <div class="container">    
+    <div class="container" style="height: 80vh;">    
         <div class="row mb-3 mt-3">
             <div class="col-md-12">
                 <div class="card m-0 p-0 border-dark">
@@ -60,7 +60,8 @@
                                         <date-picker id="dpCreatedDate" :disabled="taskId" ref="dpCreatedDate" class="form-control form-control-md" 
                                             v-model="dpCreatedDate" autocomplete="off" :config="DPConfig"></date-picker>                                        
                                         <div class="input-group-append">
-                                            <button class="btn btn-outline-secondary btn-md" type="button">
+                                            <button class="btn btn-outline-secondary btn-md" :disabled="taskId" 
+                                            type="button" @click="selectCreatedDate">
                                                 <i class="far fa-calendar-alt fa-lg"></i>
                                             </button>
                                         </div>
@@ -76,7 +77,8 @@
                                         <date-picker id="dpRequiredDate" ref="dpRequiredDate" class="form-control form-control-md" 
                                             v-model="dpRequiredDate" autocomplete="off" :config="DPConfig" @dp-change="dpRequiredChange()"></date-picker>
                                         <div class="input-group-append">
-                                            <button class="btn btn-outline-secondary btn-md" type="button">
+                                            <button class="btn btn-outline-secondary btn-md" type="button"
+                                            @click="selectRequiredDate">
                                                 <i class="far fa-calendar-alt fa-lg"></i>
                                             </button>
                                         </div>
@@ -92,7 +94,8 @@
                                         <date-picker id="dpDateClose" ref="dpDateClose" class="form-control form-control-md" 
                                             v-model="dpDateClose" autocomplete="off" :config="DPConfig" @dp-change="dpCloseChange()"></date-picker>
                                         <div class="input-group-append">
-                                            <button class="btn btn-outline-secondary btn-md" type="button">
+                                            <button class="btn btn-outline-secondary btn-md" type="button"
+                                            @click="selectDateClose">
                                                 <i class="far fa-calendar-alt fa-lg"></i>
                                             </button>
                                         </div>
@@ -102,7 +105,7 @@
                             <div class="row mt-3">
                                 <div class="col-md-3 offset-9">
                                     <div class="row">
-                                        <div class="col-md-6 d-flex align-items-right justify-content-end">
+                                        <div class="col-md-4">
                                             <button class="btn btn-block btn-primary btn-sm"
                                                 @click="createTask()" v-show="isChange || !taskId">
                                                 Confirm
@@ -120,7 +123,7 @@
             </div>
         </div>
         <div class="row mb-3" v-show="taskId">
-            <div class="col-md-12">
+            <div class="col-md-12 mb-3">
                 <div class="card m-0 p-0 border-dark">
                     <div class="card-header text-bg-primary">
                         <i class="fas fa-angle-double-right"></i> Comment Details
@@ -215,7 +218,7 @@ export default {
             cboEstados: { data: {}, selected: 0, disabled: false },
             cboTaskType: { data: {}, selected: 0, disabled: false },
             cboTaskStatus: { data: {}, selected: 0, disabled: false },
-            DPConfig: { format: 'DD/MM/YYYY', useCurrent: false, locale: 'es' },
+            DPConfig: { format: 'DD/MM/YYYY', useCurrent: false, locale: 'en_US' },
             dpCreatedDate: '',
             dpRequiredDate : '',
             dpDateClose : '',
@@ -252,14 +255,12 @@ export default {
                     DateClose : this.dpDateClose === ""? null : moment(this.dpDateClose, 'DD/MM/YYYY'),
                     userId : sessionStorage.getItem("userId")
                 }
-                            
-                axios.all(
-                [            
-                    this.$api.post('api/TaskController/saveOrUpdateTask', request, 'S')
-                ]).then(axios.spread((response) => { 
-                    this.alert('S', 'S', request.Id? 'Tarea editada con éxito':'Tarea creada con éxito');
+                                     
+                this.$api.post('api/TaskController/saveOrUpdateTask', request, 'S')
+                .then((response) => { 
+                    this.alert('S', 'S', request.Id? 'Task edited successfully':'Task created successfully');
                     this.goBack();
-                })).catch((err) => {
+                }).catch((err) => {
                     console.error(err);
                 }).finally(() => {
                     this.mostrarLoading(false);
@@ -276,30 +277,34 @@ export default {
             .then(r => {
                 if (r) {
                     this.mostrarLoading(true);
-                    axios.all(
-                    [
-                        this.$api.get('api/CommentController/deleteComment/' + item.id, 'S'),          
-                    ]).then(axios.spread((r) => {
+                    var request = { Ids : this.grilla.datos.filter(x => x._selected).map(x => x.id) };                
+                    if(request.Ids.length <= 1 || request.Ids.filter(x => x == item.id).length == 0){                    
+                        request.Ids = [];
+                        request.Ids.unshift(item.id);
+                    }
+
+                    this.$api.post('api/CommentController/deleteComment/', request, 'S')
+                    .then((r) => {
                         this.reloadGrid(false);
-                    })).catch((err) => {
+                    }).catch((err) => {
                         console.error(err);
                         this.mostrarLoading(false);
                     }).finally(() => {
-                        this.alert('S', 'S', 'Comment deleted succesfull');
+                        this.alert('S', 'S', 'Comment deleted succesfully');
                     });  
                 }
             });
         },
         reloadGrid(closePopup){
-            //console.log
+            console.log('llegue al evento') 
             if(closePopup)
                 this.isPopupComment = false;            
             this.mostrarLoading(true);
-            axios.all([            
-                this.$api.get('api/CommentController/getCommentsByTaskId/' + this.taskId, 'S'),
-            ]).then(axios.spread((comments) => {                  
+                       
+            this.$api.get('api/CommentController/getCommentsByTaskId/' + this.taskId, 'S')
+            .then((comments) => {                  
                 this.grilla.datos = comments;                    
-            })).catch((err) => {
+            }).catch((err) => {
                 console.error(err);
             }).finally(() => {
                 this.mostrarLoading(false);
@@ -339,6 +344,15 @@ export default {
         dpCloseChange(){
         if(this.dateFormat(moment(this.dpDateClose, 'DD/MM/YYYY')) !== this.dateFormat(this.closeDate, 'DD/MM/YYYY'))
             this.isChange = true;
+        },
+        selectCreatedDate() {
+            this.$refs.dpCreatedDate.$el.focus()
+        },
+        selectDateClose() {
+            this.$refs.dpDateClose.$el.focus()
+        },
+        selectRequiredDate() {
+            this.$refs.dpRequiredDate.$el.focus()
         }
     },
     created(){        

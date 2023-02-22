@@ -12,7 +12,7 @@ const $ = require("jquery");
 window.$ = $;
 const jQuery = require("jquery");
 window.jQuery = jQuery;
-moment.locale('es');
+moment.locale('en_US');
 Vue.prototype.moment = moment;
 window.moment = moment;
 //window.axios = axios;

@@ -1,24 +1,6 @@
 <template>
   <div id="app">
-    <!-- <header>
-      <div class="row m-0 p-0">
-        <div class="col-md-4">
-          <a href="#" class="logo">Management</a>      
-        </div>
-        <div class="col-md-7 offset-1 mt-3" >
-          <ul v-show="isLogged">
-            <li><a @click="clickHeader(1)" :class="aboutActive"><router-link :class="aboutActive"  to="/home">About </router-link></a></li>
-            <li><a @click="clickHeader(2)" :class="taskActive"><router-link :class="taskActive" to="/task">Task</router-link></a></li>
-            <li><a @click="clickHeader(3)" :class="commentActive"><router-link :class="commentActive" to="/comment">Comment</router-link></a></li>
-            <li><a @click="clickHeader(4)" :class="exitActive"><router-link :class="exitActive" to="/" @click.native.prevent.capture="'clicked'">Exit <i class="fas fa-sign-out-alt"></i></router-link></a></li>
-          </ul>
-        </div>
-      </div>
-    </header> -->
-
-
-
-    <body >      
+    <body class="bg">      
       <div class="header">      
         <label href="#" class="logo">Management</label>      
         <div class="header-right" v-show="isLogged">
@@ -28,10 +10,10 @@
           <a @click="clickHeader(4)" :class="exitActive"><router-link :class="exitActive" to="/" @click.native.prevent.capture="'clicked'">Exit <i class="fas fa-sign-out-alt"></i></router-link></a>
         </div>
       </div>            
-      <div class="row mt-5 pt-4" v-show="!isLogged">
+      <div class="row mt-5 pt-4" v-show="!isLogged" style="height: 76vh;">
         <div class="col-md-12">
             <div class="form-login">
-            <h4>Welcome back.</h4>
+            <h4>Welcome back</h4>
             <div class="row mt-3">
               <input type="text" id="userName" class="form-control input-sm chat-input"
                 placeholder="username" v-model="txtUser"/>
@@ -48,7 +30,7 @@
                     </a>
                 </span>
               </div>
-              <div class="row mt-2">
+              <!-- <div class="row mt-2">
                 <div class="col-md-12 text-center">
                   <label>Or</label>
                 </div>
@@ -59,11 +41,12 @@
                     <i class="fab fa-google"></i> Login with Google 
                   </button>                      
                 </span>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
-      </div>          
+      </div>
+
       <div class="row mt-1 pt-1">
         <div class="col-md-12">
           <router-view v-show="isLogged"/>
@@ -119,33 +102,23 @@ export default {
           return null;
         }
       },
-      login(){
-        console.log(this.txtUser);
-        console.log(this.txtPassword);
+      login(){        
         window.mostrarLoading(true);        
         var request = {
           UserLogin : this.txtUser,
           Password : this.txtPassword
         }
-        axios.all(
-        [
-            this.$api.post('api/LoginController/authenticate', request, 'S'),            
-        ]).then(axios.spread((response) => { 
-            console.log(response);
-            if(response.token){
-              //const qstring = this.getQueryString();
-              //this.$store.commit("SET_TOKEN", response.token);
-              
-              sessionStorage.setItem("token", response.token);
-              sessionStorage.setItem("userId", response.userId);
-              this.isLogged = true;
-              this.$router.push('/home');
-              this.aboutActive = "active";
-            }
-            // else{
 
-            // }
-        })).catch((err) => {
+        this.$api.post('api/LoginController/authenticate', request, 'S')
+        .then((response) => {             
+          if(response.token){
+            sessionStorage.setItem("token", response.token);
+            sessionStorage.setItem("userId", response.userId);
+            this.isLogged = true;
+            this.$router.push('/home');
+            this.aboutActive = "active";
+          }
+        }).catch((err) => {
           console.error(err);
         }).finally(() => {
           window.mostrarLoading(false);
@@ -186,10 +159,7 @@ export default {
   },
   created() {
     if(sessionStorage.getItem("token"))
-    {
       this.isLogged = true;
-      console.log('entre')
-    }
   }
 }
 </script>
@@ -224,11 +194,11 @@ body {
   border-radius: 15px;
   border-color:#d2d2d2;
   margin: auto;
-  width: 40%;
-  box-shadow:0 1px 0 #cfcfcf;
-  
+  width: 35%;
+  box-shadow:0 1px 0 #cfcfcf;  
   float: center;
   text-align: center;
+  height: 50%;
 }
 
 h4 { 
@@ -239,14 +209,12 @@ h4 {
 }
 
 .form-control {
-    border-radius: 10px;
+  border-radius: 10px;
 }
 
 .wrapper {
-    text-align: center;
+  text-align: center;
 }
-
-
 
 * {box-sizing: border-box;}
 body { 
@@ -264,7 +232,7 @@ body {
   text-align: center;
   text-decoration: none;
   padding: 6px 15px;
-  color: #fff;
+  color: #2b1055;
   border-radius: 20px;
 }
 
@@ -289,12 +257,12 @@ body {
 
 .logo
 {
-    color: #fff;
-    font-weight: 700;
-    text-decoration: none;
-    font-size: 2em;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+  color: #2b1055;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 2em;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
 @media screen and (max-width: 500px) {
@@ -309,8 +277,9 @@ body {
   }
 
   .form-login {
-    float: none;
+    float: none;    
     width: 90%;
+    height: 45%;
   }
   
   .text-end{

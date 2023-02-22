@@ -41,7 +41,9 @@
                     <date-picker id="dpCreatedDate" ref="dpCreatedDate" :disabled="true" class="form-control form-control-md" 
                         v-model="datosPopup.createdDate" autocomplete="off" :config="DPConfig"></date-picker>
                     <div class="input-group-append">
-                        <button class="btn btn-outline-secondary btn-md" type="button"><i class="far fa-calendar-alt fa-lg"></i></button>
+                        <button class="btn btn-outline-secondary btn-md" type="button" :disabled="true">
+                            <i class="far fa-calendar-alt fa-lg"></i>
+                        </button>
                     </div>
                 </div>
             </div>                                 
@@ -56,7 +58,10 @@
                         v-model="dpReminderDate" autocomplete="off" :config="DPConfig"  @dp-change="dpReminderChange()">
                     </date-picker>
                     <div class="input-group-append">
-                        <button class="btn btn-outline-secondary btn-md" type="button"><i class="far fa-calendar-alt fa-lg"></i></button>
+                        <button class="btn btn-outline-secondary btn-md" type="button" 
+                        @click="selectReminderDate">
+                            <i class="far fa-calendar-alt fa-lg"></i>
+                        </button>
                     </div>
                 </div>
             </div>                                 
@@ -105,7 +110,7 @@ export default {
   },  
   data() {
     return {
-        DPConfig: { format: 'DD/MM/YYYY', useCurrent: false, locale: 'es' },
+        DPConfig: { format: 'DD/MM/YYYY', useCurrent: false, locale: 'en_US' },
         txtComment : '',
         cboCommentType : { data: {}, selected: 0, disabled: false }, 
         dpReminderDate : '',
@@ -141,14 +146,11 @@ export default {
                 userId: sessionStorage.getItem("userId")
             }
 
-            console.log(request)
-            axios.all(
-            [            
-                this.$api.post('api/CommentController/saveOrUpdateComment', request, 'S')
-            ]).then(axios.spread((response) => {
-                this.alert('S', 'S', request.id ? 'Comment edited succesfull' : 'Comment created succesfull');
+            this.$api.post('api/CommentController/saveOrUpdateComment', request, 'S')
+            .then((response) => {
+                this.alert('S', 'S', request.id ? 'Comment edited succesfully' : 'Comment created succesfully');
                 this.$emit('closePopup');
-            })).catch((err) => {
+            }).catch((err) => {
                 console.error(err);
             }).finally(() => {
                 this.mostrarLoading(false);
@@ -157,15 +159,15 @@ export default {
     },
     validateComment(){
         if(this.txtComment === ""){
-            this.alert('T', 'W', 'Add comment')
+            this.alert('T', 'W', 'Add a comment')
             return false;
         }
         if(this.cboCommentType.selected.id == 0){
-            this.alert('T', 'W', 'Select comment type');
+            this.alert('T', 'W', 'Select a comment type');
             return false;
         }
         if(this.dpReminderDate == "" || this.dpReminderDate == null){
-            this.alert('T', 'W', 'Select reminder date');
+            this.alert('T', 'W', 'Select a reminder date');
             return false;
         }
         return true;
@@ -173,13 +175,14 @@ export default {
     dpReminderChange(){
         if(this.dateFormat(moment(this.dpReminderDate, 'DD/MM/YYYY')) !== this.dateFormat(this.datosPopup.reminderDate, 'DD/MM/YYYY'))
             this.isChange = true;
+    },
+    selectReminderDate() {
+        this.$refs.dpReminderDate.$el.focus()
     }
   },
-  created() {
-    axios.all(
-    [            
-        this.$api.get('api/CommentController/getCommentTypes', 'S')
-    ]).then(axios.spread((response) => {
+  created() {           
+    this.$api.get('api/CommentController/getCommentTypes', 'S')
+    .then((response) => {
         this.cboCommentType.data = response;
         this.cboCommentType.data.unshift({ id: "0", description: "- Selected -"});
         this.cboCommentType.selected = this.cboCommentType.data[0];
@@ -190,7 +193,7 @@ export default {
             this.dpReminderDate = this.dateFormat(this.datosPopup.reminderDate, 'DD/MM/YYYY');
             this.datosPopup.createdDate = this.dateFormat(this.datosPopup.createdDate, 'DD/MM/YYYY');
         }
-    })).catch((err) => {
+    }).catch((err) => {
         console.error(err);
     }).finally(() => {
         this.mostrarLoading(false);

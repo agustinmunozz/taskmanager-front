@@ -97,9 +97,7 @@ const ApiPlugin = {
         showError = true,
         API = null,
         token = null
-      ) {
-        //localStorage.setItem("refreshSession", true);
-        console.log(sessionStorage.getItem("token"));
+      ) {                
         const options = {
           baseAPI:
             API !== null && API !== ""
@@ -123,8 +121,7 @@ const ApiPlugin = {
 
         return axios
           .get(options.baseAPI + URL, { withCredentials: true })
-          .then(function (response) {
-            console.log(response);
+          .then(function (response) {            
             //response.setHeader("Access-Control-Allow-Origin", "*");
             //response.setHeader("Access-Control-Allow-Credentials", true);
             if (
@@ -133,7 +130,7 @@ const ApiPlugin = {
               $.isEmptyObject(response.data)
             ) {
               if (showWarning)
-                $alert(tipoNot, "W", "No se encontraron registros");
+                $alert(tipoNot, "W", "No records found");
             }
             return Promise.resolve(response.data);
           })
@@ -149,9 +146,7 @@ const ApiPlugin = {
         showError = true,
         API = null,
         token = null
-      ) {
-        //localStorage.setItem("refreshSession", true);
-        console.log(sessionStorage.getItem("token") + " ZZ");
+      ) {        
         const options = {
           baseAPI:
             API !== null && API !== ""
@@ -177,7 +172,6 @@ const ApiPlugin = {
         return axios
           .post(options.baseAPI + URL, parameters, { withCredentials: true })
           .then(function (response) {
-            console.log(response);
             //response.setHeader("Access-Control-Allow-Origin", "*");
             //response.setHeader("Access-Control-Allow-Credentials", true);
             if (
@@ -186,7 +180,7 @@ const ApiPlugin = {
               $.isEmptyObject(response.data)
             ) {
               if (showWarning)
-                $alert(tipoNot, "W", "No se encontraron registros");
+                $alert(tipoNot, "W", "No records found");
             }
             return Promise.resolve(response.data);
           })
@@ -221,7 +215,7 @@ const ApiPlugin = {
               $.isEmptyObject(response.data)
             ) {
               if (showWarning)
-                $alert(tipoNot, "W", "No se encontraron registros");
+                $alert(tipoNot, "W", "No records found");
             }
             return Promise.resolve(response.data);
           })
@@ -256,7 +250,7 @@ const ApiPlugin = {
               $.isEmptyObject(response.data)
             ) {
               if (showWarning)
-                $alert(tipoNot, "W", "No se encontraron registros");
+                $alert(tipoNot, "W", "No records found");
             }
             return Promise.resolve(response.data);
           })
@@ -289,7 +283,7 @@ const ApiPlugin = {
               $.isEmptyObject(response.data)
             ) {
               if (showWarning)
-                $alert(tipoNot, "W", "No se encontraron registros");
+                $alert(tipoNot, "W", "No records found");
             }
             return Promise.resolve(response.data);
           })

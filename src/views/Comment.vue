@@ -3,7 +3,7 @@
       <div class="container">
           <div class="row">
               <div class="col-md-3 pl-0 ml-0 text-md-left">
-                  <label class="h4" style="color: lightgrey;">Search Comments</label>
+                  <label class="h4" style="color: black;">Search Comments</label>
               </div>
           </div>
           <div class="row mb-3 mt-3">
@@ -43,7 +43,7 @@
                               <div class="input-group mb-3">
                                   <date-picker id="dpCreatedDate" ref="dpCreatedDate" class="form-control form-control-md" v-model="dpCreatedDate" autocomplete="off" :config="DPConfig"></date-picker>                                        
                                   <div class="input-group-append">
-                                      <button class="btn btn-outline-secondary btn-md" type="button"><i class="far fa-calendar-alt fa-lg"></i></button>
+                                      <button class="btn btn-outline-secondary btn-md" type="button" @click="selectCreatedDate"><i class="far fa-calendar-alt fa-lg"></i></button>
                                   </div>
                               </div>
                           </div>                                    
@@ -62,7 +62,7 @@
                                 <div class="input-group mb-3">
                                     <date-picker id="dpReminderDate" ref="dpReminderDate" class="form-control form-control-md" v-model="dpReminderDate" autocomplete="off" :config="DPConfig"></date-picker>
                                     <div class="input-group-append">
-                                        <button class="btn btn-outline-secondary btn-md" type="button"><i class="far fa-calendar-alt fa-lg"></i></button>
+                                        <button class="btn btn-outline-secondary btn-md" type="button" @click="selectReminderDate"><i class="far fa-calendar-alt fa-lg"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -130,7 +130,7 @@
                             <div class="card-footer m-0">
                                 <div class="row mb-2 mt-2">
                                   <div class="col-md-2">
-                                      <button class="btn btn-block btn-sm btn-success" ><i class="far fa-file-excel"></i> Exportar</button>
+                                      <!-- <button class="btn btn-block btn-sm btn-success" ><i class="far fa-file-excel"></i> Exportar</button> -->
                                   </div>
                                 </div>
                             </div>
@@ -156,7 +156,8 @@
                     </button>
                 </template>
             </div>
-            <popupComment @cancelarComment="isPopupComment = false" :datosPopup="popupData" :taskId="txtTaskId"/>
+            <popupComment @cancelarComment="isPopupComment = false" :datosPopup="popupData" 
+            :taskId="txtTaskId" @closePopup="isPopupComment = false" />
         </b-modal> 
       </div>
   </div>
@@ -176,7 +177,7 @@ export default {
   },
   data() {
     return {
-        DPConfig: { format: 'DD/MM/YYYY', useCurrent: false, locale: 'es' },
+        DPConfig: { format: 'DD/MM/YYYY', useCurrent: false, locale: 'en_US' },
         txtTaskId: '',
         dpCreatedDate : '',
         dpReminderDate : '',
@@ -192,21 +193,19 @@ export default {
     searchComment(){
         this.mostrarLoading(true);
         var request = {
-        Id : this.txtCommentId === "" ? null : this.txtCommentId,
-        CreatedDate: this.dpCreatedDate === ""? null : moment(this.dpCreatedDate, 'DD/MM/YYYY'),
-        Comment : this.txtComment,
-        CommentTypeId : this.cboCommentType.selected.id,
-        ReminderDate: this.dpReminderDate === ""? null : moment(this.dpReminderDate, 'DD/MM/YYYY'),   
+            Id : this.txtCommentId === "" ? null : this.txtCommentId,
+            CreatedDate: this.dpCreatedDate === ""? null : moment(this.dpCreatedDate, 'DD/MM/YYYY'),
+            Comment : this.txtComment,
+            CommentTypeId : this.cboCommentType.selected.id,
+            ReminderDate: this.dpReminderDate === ""? null : moment(this.dpReminderDate, 'DD/MM/YYYY'),
+            TaskId: this.txtTaskId === ""? null : this.txtTaskId
         }
 
         this.grilla.datos = [];
-        axios.all(
-        [            
-            this.$api.post('api/CommentController/searchComments', request, 'S')
-        ]).then(axios.spread((response) => {       
-            console.log(response);
+        this.$api.post('api/CommentController/searchComments', request, 'S')
+        .then((response) => {                   
             this.grilla.datos = response;
-        })).catch((err) => {
+        }).catch((err) => {
             console.error(err);
         }).finally(() => {
             this.mostrarLoading(false);
@@ -238,31 +237,34 @@ export default {
                 }
                                 
                 this.mostrarLoading(true);
-                axios.all(
-                [
-                    this.$api.post('api/CommentController/deleteComment/', request, 'S'),          
-                ]).then(axios.spread((r) => {
+                this.$api.post('api/CommentController/deleteComment/', request, 'S')
+                .then((r) => {
                     this.searchComment();
-                })).catch((err) => {
+                }).catch((err) => {
                     console.error(err);
                     this.mostrarLoading(false);
                 }).finally(() => {
-                    this.alert('S', 'S', 'Comment deleted succesfull');
+                    this.alert('S', 'S', 'Comment deleted succesfully');
                 });  
             }
         });
+    },
+    selectCreatedDate() {
+        this.$refs.dpCreatedDate.$el.focus()
+    },
+    selectReminderDate() {
+        this.$refs.dpReminderDate.$el.focus()
     }
   },
   created(){      
       this.mostrarLoading(true);
-      axios.all(
-      [
-          this.$api.get('api/CommentController/getCommentTypes', 'S'),          
-      ]).then(axios.spread((types) => { 
+          
+      this.$api.get('api/CommentController/getCommentTypes', 'S')
+      .then((types) => { 
           this.cboCommentType.data = types;
           this.cboCommentType.data.unshift({ id: "0", description: "- Selected -"});
           this.cboCommentType.selected = this.cboCommentType.data[0];
-      })).catch((err) => {
+      }).catch((err) => {
           console.error(err);
       }).finally(() => {
           this.mostrarLoading(false);

@@ -3,7 +3,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-3 pl-0 ml-0 text-md-left">
-                    <label class="h4" style="color: lightgrey;">Search Tasks</label>
+                    <label class="h4" style="color: black;">Search Tasks</label>
                 </div>
             </div>
             <div class="row mb-3 mt-3">
@@ -66,7 +66,7 @@
                                         <div class="input-group mb-3">
                                             <date-picker id="dpCreatedDate" ref="dpCreatedDate" class="form-control form-control-md" v-model="dpCreatedDate" autocomplete="off" :config="DPConfig"></date-picker>                                        
                                             <div class="input-group-append">
-                                                <button class="btn btn-outline-secondary btn-md" type="button"><i class="far fa-calendar-alt fa-lg"></i></button>
+                                                <button class="btn btn-outline-secondary btn-md" type="button" @click="selectCreatedDate"><i class="far fa-calendar-alt fa-lg"></i></button>
                                             </div>
                                         </div>
                                     </div>
@@ -77,7 +77,7 @@
                                         <div class="input-group mb-3">
                                             <date-picker id="dpRequiredDate" ref="dpRequiredDate" class="form-control form-control-md" v-model="dpRequiredDate" autocomplete="off" :config="DPConfig"></date-picker>
                                             <div class="input-group-append">
-                                                <button class="btn btn-outline-secondary btn-md" type="button"><i class="far fa-calendar-alt fa-lg"></i></button>
+                                                <button class="btn btn-outline-secondary btn-md" type="button" @click="selectRequiredDate"><i class="far fa-calendar-alt fa-lg"></i></button>
                                             </div>
                                         </div>
                                     </div>
@@ -90,7 +90,7 @@
                                         <div class="input-group mb-3">
                                             <date-picker id="dpDateClose" ref="dpDateClose" class="form-control form-control-md" v-model="dpDateClose" autocomplete="off" :config="DPConfig"></date-picker>
                                             <div class="input-group-append">
-                                                <button class="btn btn-outline-secondary btn-md" type="button"><i class="far fa-calendar-alt fa-lg"></i></button>
+                                                <button class="btn btn-outline-secondary btn-md" type="button" @click="selectDateClose"><i class="far fa-calendar-alt fa-lg"></i></button>
                                             </div>
                                         </div>
                                     </div>
@@ -165,7 +165,7 @@
                                 <div class="card-footer m-0">
                                     <div class="row mb-2 mt-2">
                                         <div class="col-md-10">
-                                            <button class="btn btn-block btn-sm btn-success" @click="exporter()"><i class="far fa-file-excel"></i> Exportar</button>
+                                            <!-- <button class="btn btn-block btn-sm btn-success" @click="exporter()"><i class="far fa-file-excel"></i> Exportar</button> -->
                                         </div>
                                         <div class="col-md-2 text-end">
                                             <button class="btn btn-block btn-success btn-sm "  
@@ -223,7 +223,7 @@ export default {
             cboEstados: { data: {}, selected: 0, disabled: false },
             cboTaskType: { data: {}, selected: 0, disabled: false },
             cboTaskStatus: { data: {}, selected: 0, disabled: false },
-            DPConfig: { format: 'DD/MM/YYYY', useCurrent: false, locale: 'es' },
+            DPConfig: { format: 'DD/MM/YYYY', useCurrent: false, locale: 'en_US' },
             dpCreatedDate: '',
             dpRequiredDate : '',
             dpDateClose : '',
@@ -246,14 +246,12 @@ export default {
                 DateClose: this.dpDateClose === ""? null : moment(this.dpDateClose, 'DD/MM/YYYY'),
                 RequiredDate: this.dpRequiredDate === ""? null : moment(this.dpRequiredDate, 'DD/MM/YYYY'),
             }
-
-            axios.all(
-            [            
-                this.$api.post('api/TaskController/export', request, 'S')
-            ]).then(axios.spread((response) => {                 
+    
+            this.$api.post('api/TaskController/export', request, 'S')
+            .then((response) => {                 
                 //this.grilla.datos = response;
                 console.log(response);
-            })).catch((err) => {
+            }).catch((err) => {
                 console.error(err);
             }).finally(() => {
                 this.mostrarLoading(false);
@@ -270,13 +268,11 @@ export default {
                 DateClose: this.dpDateClose === ""? null : moment(this.dpDateClose, 'DD/MM/YYYY'),
                 RequiredDate: this.dpRequiredDate === ""? null : moment(this.dpRequiredDate, 'DD/MM/YYYY'),
             }
-
-            axios.all(
-            [            
-                this.$api.post('api/TaskController/searchTasks', request, 'S')
-            ]).then(axios.spread((response) => {                 
+       
+            this.$api.post('api/TaskController/searchTasks', request, 'S')
+            .then((response) => {                 
                 this.grilla.datos = response;
-            })).catch((err) => {
+            }).catch((err) => {
                 console.error(err);
             }).finally(() => {
                 this.mostrarLoading(false);
@@ -294,8 +290,7 @@ export default {
         createTask(){
             this.$router.push('/abmTask/0');             
         },
-        addComment(item){
-            console.log(item);
+        addComment(item){            
             this.taskId = item.id;
             this.popupData = {};
             this.isPopupComment = true;
@@ -308,19 +303,28 @@ export default {
             .then(r => {
                 if (r) {
                     this.mostrarLoading(true);
-                    axios.all(
-                    [
-                        this.$api.get('api/TaskController/deleteTask/' + item.id, 'S'),          
-                    ]).then(axios.spread((r) => {
-                        this.searchTasks();
-                    })).catch((err) => {
-                        console.error(err);
-                        this.mostrarLoading(false);
+                    
+                    this.$api.get('api/TaskController/deleteTask/' + item.id, 'S')
+                    .then((r) => {
+                        //this.searchTasks();
+                        this.grilla.datos = this.grilla.datos.filter(x => x.id != item.id)
+                    }).catch((err) => {
+                        console.error(err);                        
                     }).finally(() => {
-                        this.alert('S', 'S', 'Task deleted succesfull');
+                        this.alert('S', 'S', 'Task deleted succesfully');
+                        this.mostrarLoading(false);
                     }); 
                 }
             });
+        },
+        selectCreatedDate() {
+            this.$refs.dpCreatedDate.$el.focus()
+        },
+        selectDateClose() {
+            this.$refs.dpDateClose.$el.focus()
+        },
+        selectRequiredDate() {
+            this.$refs.dpRequiredDate.$el.focus()
         }
     },
     created(){        
@@ -366,9 +370,9 @@ const estruct = [
     {
         key: 'dateClose', label: 'Date Close'
     },
-    {
-        key: 'nextActionDate', label: 'Next Action Date'
-    },
+    // {
+    //     key: 'nextActionDate', label: 'Next Action Date'
+    // },
     {
         key: 'userId', label: 'User Id', class: "text-center"
     },

@@ -4,7 +4,7 @@ import 'toastr/toastr.less'
 import swal from 'sweetalert2'
 
 const AlertPlugin = {
-    install(Vue, options) {
+    install(Vue) {
 
       const _alert = (tipo, estilo, mensaje, titulo='') => {
 
@@ -19,13 +19,13 @@ const AlertPlugin = {
               tit = 'ERROR';
               break;
             case "W":
-             tit = 'ADVERTENCIA';
+             tit = 'WARNING';
               break;
             case "S":
-              tit = 'EXITO';
+              tit = 'SUCCESS';
               break;
             case "I":
-              tit = 'INFORMACION';
+              tit = 'INFORMATION';
               break;
           };
         }

@@ -30,11 +30,26 @@ h2{
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
 }
-body
-{
-    min-height: 100vh;
-    background: linear-gradient(#2b1055,#7597de);
+
+
+body {
+    height: 100%;    
 }
+
+.bg
+{
+  /* The image used */
+  background: url("../../assets/fondo.jpg");
+
+  /* Full height */
+  height: 100%;
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 footer
 {
     position: initial;
