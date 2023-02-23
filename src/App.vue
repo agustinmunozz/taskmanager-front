@@ -16,11 +16,11 @@
             <h4>Welcome back</h4>
             <div class="row mt-3">
               <input type="text" id="userName" class="form-control input-sm chat-input"
-                placeholder="username" v-model="txtUser"/>
+                placeholder="username" v-model="txtUser" @keyup.enter="login()"/>
             </div>
             <div class="row mt-3">
               <input type="password" id="userPassword" class="form-control input-sm chat-input" 
-                placeholder="password" v-model="txtPassword"/>
+                placeholder="password" v-model="txtPassword" @keyup.enter="login()"/>
             </div>
             <div class="wrapper">
               <div class="row mt-3">
@@ -103,6 +103,19 @@ export default {
         }
       },
       login(){        
+        if(this.txtUser == ""){
+          this.alert('T', 'W', 'Add a valid username');
+          return;
+        }
+        if(this.txtPassword == ""){
+          this.alert('T', 'W', 'Add a valid password');
+          return;
+        }
+        if(this.txtPassword.length < 6){
+          this.alert('T', 'W', 'The password is too short');          
+          return;
+        }
+
         window.mostrarLoading(true);        
         var request = {
           UserLogin : this.txtUser,
