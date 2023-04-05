@@ -130,7 +130,7 @@
                             <div class="card-footer m-0">
                                 <div class="row mb-2 mt-2">
                                   <div class="col-md-2">
-                                      <!-- <button class="btn btn-block btn-sm btn-success" ><i class="far fa-file-excel"></i> Exportar</button> -->
+                                      <!-- <button class="btn btn-block btn-sm btn-success" @click="report()"><i class="far fa-file-excel"></i> Exportar</button> -->
                                   </div>
                                 </div>
                             </div>
@@ -254,7 +254,27 @@ export default {
     },
     selectReminderDate() {
         this.$refs.dpReminderDate.$el.focus()
-    }
+    },
+    exporter(){
+        var request = {
+            Id : this.txtCommentId === "" ? null : this.txtCommentId,
+            CreatedDate: this.dpCreatedDate === ""? null : moment(this.dpCreatedDate, 'DD/MM/YYYY'),
+            Comment : this.txtComment,
+            CommentTypeId : this.cboCommentType.selected.id,
+            ReminderDate: this.dpReminderDate === ""? null : moment(this.dpReminderDate, 'DD/MM/YYYY'),
+            TaskId: this.txtTaskId === ""? null : this.txtTaskId
+        }
+
+        this.$api.post('api/CommentController/export', request, 'S')
+        .then((response) => {                 
+            //this.grilla.datos = response;
+            console.log(response);
+        }).catch((err) => {
+            console.error(err);
+        }).finally(() => {
+            this.mostrarLoading(false);
+        });
+    },
   },
   created(){      
       this.mostrarLoading(true);

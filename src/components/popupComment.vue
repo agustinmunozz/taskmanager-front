@@ -16,8 +16,9 @@
                 <label for="txtComment" class="align-middle">Comment:</label>
             </div>
             <div class="col-md-6">
-                <input id="txtComment" type="text" v-model="txtComment" class="form-control form-control-md" 
-                    placeholder="Comment" aria-describedby="button-addon2"  @change="isChange = true"/>
+                <textarea class="form-control form-control-md" id="txtComment" v-model="txtComment"
+                maxlength="300" rows="3" placeholder="Comment" @change="isChange = true"
+                ></textarea>
             </div>
         </div>
         <div class="row mt-3">

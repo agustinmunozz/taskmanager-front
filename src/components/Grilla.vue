@@ -37,7 +37,7 @@
                 class="btn btn-block btn-secondary"
                 :disabled="!txtFiltro"
                 @click="txtFiltro = ''"
-              >Borrar</button>
+              >Clean</button>
             </div>
           </div>
         </div>
@@ -61,7 +61,7 @@
           stacked="lg"
           :show-empty="true"
           :empty-text="mensajeSinResultado"
-          :empty-filtered-text="'No se encontraron registros que coincidieran con el filtro de busqueda.'"
+          :empty-filtered-text="'No records matching search filter found.'"
           @row-clicked="rowClick"
           @row-dblclicked="rowDblclick"
           v-model="tableitems"
@@ -147,7 +147,7 @@ export default {
       default: false
     },
     mensajeSinResultado: {
-      default: "No se encontraron registros."
+      default: "Registers not found."
     },
     conCheck: {
       required: false,

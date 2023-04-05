@@ -33,23 +33,6 @@ import "ti-icons/css/themify-icons.css";
 import 'v-calendar/lib/v-calendar.min.css'
 import "./assets/css/ol.css";
 
-
-Vue.config.productionTip = false;
-let gauthClientId = '726149785531-dpep6niev9n10rft3vg4g96at37bvdq4.apps.googleusercontent.com';
-import GAuth from 'vue-google-oauth2'
-
-const gauthOption = {
-  "client_id":"726149785531-dpep6niev9n10rft3vg4g96at37bvdq4.apps.googleusercontent.com",
-  "project_id":"vuetaskmannager",
-  "auth_uri":"https://accounts.google.com/o/oauth2/auth",
-  "token_uri":"https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs",
-  "client_secret":"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",
-  "redirect_uris":["http://localhost:8080","http://localhost"],
-  "javascript_origins":["http://localhost:8080","http://localhost"]
-}
-Vue.use(GAuth, gauthOption)
-
 new Vue({
   router,
   store,

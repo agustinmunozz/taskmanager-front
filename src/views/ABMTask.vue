@@ -22,9 +22,12 @@
                                     <label for="txtDescription" class="align-middle"> Description:</label>
                                 </div>
                                 <div class="col-md-6">
-                                    <input type="text" id="txtDescription" v-model="txtDescription" class="form-control" 
-                                    placeholder="Description" maxlength="30" aria-label="Description" 
-                                    aria-describedby="button-addon2" @change="isChange = true">
+                                    <textarea class="form-control" id="txtDescription" v-model="txtDescription"
+                                    maxlength="100" rows="3" placeholder="Description" @change="isChange = true"
+                                    ></textarea>
+                                    <!-- <input type="text" id="txtDescription" v-model="txtDescription" class="form-control" 
+                                     maxlength="30" aria-label="Description" 
+                                    aria-describedby="button-addon2"> -->
                                 </div>
                             </div>
                             <div class="row mt-3">
